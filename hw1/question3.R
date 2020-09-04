@@ -63,6 +63,7 @@ plot(
 
 
 # Part D #
+set.seed(8675309)
 efficiency.mat <- matrix(NA, 10000, 5)
 
 for ( i in seq(1, 10000, 1) ) {

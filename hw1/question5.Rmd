@@ -1,14 +1,12 @@
-#' ---
-#'   
-#' Joseph Froelicher  
-#' Dr. Alex Kaizer  
-#' BIOS 6611  
-#' 09/10/2020  
-#' 
-#' ---
-#'
-
-# Part A #
+---
+title: "Question 5, Homework 1"
+author: "Joe Froelicher"
+date: "9/10/2020"
+output: word_document
+fontsize: 12pt
+---
+# Part A
+``` {r, echo = TRUE}
 twos <- vector("double", 250)
 iter <- 0
 
@@ -28,7 +26,11 @@ for (r in rand) {
   sample[iter] <- twos[r]
 }
 
-# Part B #
+head(sample)
+```
+
+# Part B
+``` {r, echo = TRUE}
 setwd("C:/Users/jofro/OneDrive/cu/sem1/methods1/hw1")
 names <- read.table("names.txt")
 colnames(names) <- "name"
@@ -50,8 +52,10 @@ for (t in team_prob) {
 head(names, 10)
 
 table(names$team)
+```
 
-# Part C #
+# Part C
+``` {r, echo = TRUE}
 set.seed(8675309)
 df <- data.frame("id" = 1:10, "age" =  runif(10, 20, 60))
 
@@ -60,8 +64,10 @@ younger <- subset(df, age < 45)
 
 print(older)
 print(younger)
+```
 
-# Part D #
+# Part D
+``` {r, echo = TRUE}
 set.seed(8675309)
 assignments <- data.frame(
   "id" = 1:100,
@@ -96,8 +102,10 @@ for (a in assignments$pharma_intervention) {
 }
 
 table(assignments$dietary_intervention, assignments$pharma_intervention)
+```
 
-# Part E #
+# Part E
+``` {r, echo = TRUE}
 hospital <- data.frame(
   "id" = c( rep.int(1, 40), rep.int(2, 40), rep.int(3, 40), rep.int(4, 40), rep.int(5, 40) ),
   "patient" = c(1:40, 1:40, 1:40, 1:40, 1:40),
@@ -149,3 +157,4 @@ data.frame(
     "average"
   )
 )
+```

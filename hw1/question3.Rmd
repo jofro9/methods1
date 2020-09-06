@@ -1,19 +1,21 @@
-#' ---
-#'   
-#' Joseph Froelicher  
-#' Dr. Alex Kaizer  
-#' BIOS 6611  
-#' 09/10/2020  
-#' 
-#' ---
-#'
-
-# Part A #
+---
+title: "Question 3, Homework 1"
+author: "Joe Froelicher"
+date: "9/10/2020"
+output: word_document
+fontsize: 12pt
+---
+# Part A
+``` {r, echo = TRUE}
 set.seed(8675309)
 height <- rnorm(100, 70, sqrt(15))
+head(height)
 bias <- median(height) - 70
+bias
+```
 
-# Part B & C #
+# Part B
+``` {r, echo = TRUE}
 set.seed(8675309)
 vec.length <- 100000/100
 bias.mat <- matrix(NA, vec.length, 4)
@@ -47,22 +49,29 @@ head(bias.mat)
 plot(
   bias.mat[,4],
   bias.mat[,2],
-  main = "Measure of Bias from n = 100 to n = 100,000, by increments of 100",
+  main = "Bias from n = 100 to n = 100,000, by 100",
   xlab = "n",
   ylab = "Bias",
   pch = 20
 )
 
+```
+
+# Part C
+``` {r, echo = TRUE}
+
 plot(
   bias.mat[,4],
   bias.mat[,3],
-  main = "Variance WRT the Median estimator, from n = 100 to n = 100,000, by increments of 100",
+  main = "Variance WRT the Median estimator",
   xlab = "n",
-  ylab = "Variance WRT the Median",
+  ylab = "Variance",
   pch = 20
 )
+```
 
-# Part D #
+# Part D
+``` {r, echo = TRUE}
 set.seed(8675309)
 efficiency.mat <- matrix(NA, 10000, 5)
 
@@ -103,3 +112,9 @@ plot(
 
 mean(efficiency.mat[,2])
 mean(efficiency.mat[,4])
+```
+
+In terms of the better estimator, because the variance of the median is closer in magnitude to the assumed 15, then we would call the median a more efficient estimator. However, as mentioned in the next problem, we have a better way of measuring this.
+
+# Part E
+The Cramer-Rao lower bound is a function that calculates the minimum variance of an 'unbiased' estimator. We know that for an estimator \theta to be efficient, we want the variance of \theta to be greater than or equal to one over the Cramer-Rao function.

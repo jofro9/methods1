@@ -1,25 +1,29 @@
-#' ---
-#'   
-#' Joseph Froelicher  
-#' Dr. Alex Kaizer  
-#' BIOS 6611  
-#' 09/10/2020  
-#' 
-#' ---
-#'
-
-# Part A #
+---
+title: "Question 4, Homework 1"
+author: "Joe Froelicher"
+date: "9/10/2020"
+output: word_document
+fontsize: 12pt
+---
+# Part A
+``` {r, echo = TRUE}
+setwd("C:/Users/jofro/OneDrive/cu/sem1/methods1/hw1")
 naws <- read.csv("NAWS2014.csv", header = TRUE)
+head(naws$A09)
+```
 
-# Part B #
+# Part B
+``` {r, echo = TRUE}
 hist(
   naws$A09,
-  main = "Histogram of years of school completed by migrant workers",
+  main = "Years of school completed by migrant workers",
   xlab = "Number of years of school completed",
   ylab = "Number of workers"
 )
+```
 
-# Part C #
+# Part C
+```{r, echo = TRUE}
 mean(naws$A09)
 median(naws$A09)
 
@@ -30,8 +34,11 @@ getMode <- function(v) {
 }
 
 getMode(naws$A09)
+```
+Referencing the histogram, as well as measures of median and mode, we know that data that has a heavy right tail (in this case) or left tail, tend to be better estimated by a median than a mean. It is worth noting that the buckets with the most number of workers are 6, 8 and 12, the years we would expect the most people to drop out of school (For much of the United States those would be the years you are transitioning to a new school).
 
-# Part D #
+# Part D
+``` {r, echo = TRUE}
 naws["category_edu"] <- NA
 iter <- 0
 
@@ -53,12 +60,16 @@ for (a in naws$A09) {
 }
 
 head(naws$category_edu)
+```
 
-# Part E #
+# Part E
+``` {r, echo = TRUE}
 cat_table <- table(naws$category_edu) / length(naws$category_edu)
 cat_table
+```
 
-# Part F #
+# Part F
+``` {r, echo = TRUE}
 mockdata <- data.frame(subject = 1:800, random = runif(n = 800))
 head(mockdata)
 
@@ -111,12 +122,16 @@ for (c in mockdata$educ_cat) {
 }
 
 mockdata$educ_years <- trunc(mockdata$educ_years)
+head(mockdata)
+```
 
-# Part G #
+# Part G
+```{r, echo = TRUE}
 hist(
   mockdata$educ_years,
-  main = "Histogram of years of school completed by migrant workers (Random)",
+  main = "Years of school completed (mockdata)",
   xlab = "Number of years of school completed",
   ylab = "Number of workers",
   breaks = 16
 )
+```

@@ -102,12 +102,16 @@ for ( i in seq(1, 10000, 1) ) {
 
 plot(
   efficiency.mat[,5],
-  efficiency.mat[,2]
+  efficiency.mat[,2],
+  Xlab = "n",
+  ylab = "mean variance"
 )
 
 plot(
   efficiency.mat[,5],
-  efficiency.mat[,4]
+  efficiency.mat[,4],
+  Xlab = "n",
+  ylab = "median variance"
 )
 
 mean(efficiency.mat[,2])

@@ -22,4 +22,4 @@ t.test(sleep1$extra, sleep2$extra, paired = TRUE)
 ```
 
 # Part C
-For the 'unpaired' t-test, we are assuming the two groups are independent of eachother, with equal variance. For a 'paired' t-test, memebers from the same group are typically tested. The results from the first, unpaired test were not significant at a alpha level of 0.05. However, when paired, there is in fact evidence of difference between the two sample groups at an alpha level of 0.05.
+For the 'unpaired' t-test, we are assuming the two groups are independent of eachother, with equal variance. For a 'paired' t-test, memebers from the same group are typically tested. The results from the first, unpaired test were not significant at a alpha level of 0.05. However, when paired, there is evidence of a difference in the mean effect between the two sample groups at an alpha level of 0.05, with a confidence interval of [-2.460, -0.700].

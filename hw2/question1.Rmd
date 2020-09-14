@@ -1,0 +1,84 @@
+---
+title: "Question 1"
+author: "Joseph Froelicher"
+date: "9/17/2020"
+output: word_document
+---
+
+# Part A Poisson
+```{r, echo = TRUE, include = TRUE}
+set.seed(8675309)
+LAMBDA <- 1.5
+rps <- rpois(10000, LAMBDA)
+head(rps)
+```
+# Part B Poisson
+```{r, echo = TRUE, include = TRUE}
+p.theoretical_mean <- LAMBDA
+p.theoretical_sd <- LAMBDA
+p.theoretical_mean
+p.theoretical_sd
+
+p.simulated_mean <- mean(rps)
+p.simulated_sd <- sd(rps)
+p.simulated_mean
+p.simulated_sd
+```
+Theoretical mean and sd from Miller I and Miller M, 'John E. Freund's Mathematical Statistics with Applications'; eigth edition, p. 162
+  
+# Part C Poisson
+```{r, echo = TRUE, include = TRUE}
+hist(
+  rps,
+  breaks = -2:8,
+  main = "Simulated Poisson distribution (N = 10,000)",
+  xlab = "value",
+  ylab = "n"
+)
+
+boxplot(
+  rps,
+  ylab = "value",
+  main = "Simulated Poisson distribution (n = 10,000)"
+)
+```
+  
+# Part A Binomial
+```{r, echo = TRUE, include = TRUE}
+set.seed(8675309)
+N <- 5
+THETA <- 0.15
+rbs <- rbinom(10000, N, THETA)
+head(rbs)
+```
+  
+# Part B Binomial
+```{r, echo = TRUE, include = TRUE}
+b.theoretical_mean <- N * THETA
+b.theoretical_sd <- sqrt( N * THETA * (1 - THETA) )
+b.theoretical_mean
+b.theoretical_sd
+
+b.simulated_mean <- mean(rbs)
+b.simulated_sd <- sd(rbs)
+b.simulated_mean
+b.simulated_sd
+```
+Theoretical mean and sd from Miller I and Miller M, 'John E. Freund's Mathematical Statistics with Applications'; eigth edition, p. 149
+  
+# Part C Binomial
+```{r, echo = TRUE, include = TRUE}
+hist(
+  rbs,
+  breaks = -2:8,
+  main = "Simulated Binomial distribution (N = 10,000)",
+  xlab = "value",
+  ylab = "n"
+)
+
+boxplot(
+  rbs,
+  ylab = "value",
+  main = "Simulated Binomial distribution (n = 10,000)"
+)
+```

@@ -58,7 +58,7 @@ hist(
 )
 
 boxplot(
-  rps,
+  rbs,
   ylab = "value",
   main = "Boxplot of Simulated Binomial distribution (n = 10,000)"
 )

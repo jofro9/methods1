@@ -20,13 +20,13 @@ hist(
   rps,
   breaks = -2:8,
   main = "Histogram of Simulated Poisson distribution (N = 10,000)",
-  xlab = "lambda",
+  xlab = "value",
   ylab = "n"
 )
 
 boxplot(
   rps,
-  ylab = "counts",
+  ylab = "value",
   main = "Boxplot of Simulated Poisson distribution (n = 10,000)"
 )
 
@@ -53,11 +53,12 @@ hist(
   rbs,
   breaks = -2:8,
   main = "Histogram of Simulated Binomial distribution (N = 10,000)",
+  xlab = "value",
   ylab = "n"
 )
 
 boxplot(
-  rbs,
-  ylab = "counts",
+  rps,
+  ylab = "value",
   main = "Boxplot of Simulated Binomial distribution (n = 10,000)"
 )

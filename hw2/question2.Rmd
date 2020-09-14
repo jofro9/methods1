@@ -1,4 +1,12 @@
+---
+title: "Question 2"
+author: "Joseph Froelicher"
+date: "9/17/2020"
+output: word_document
+---
+
 # Part A
+```{r, echo = TRUE, include = TRUE}
 N = 120
 P = 0.01
 
@@ -6,8 +14,10 @@ binomial_prob <- pbinom(0.025, N, P)
 binomial_prob
 poisson_prob <- ppois(0.025, N * P)
 poisson_prob
-
+```
+  
 # Part B
+```{r, echo = TRUE, include = TRUE}
 library(plot.matrix)
 library(ggplot2)
 library(reshape2)
@@ -47,7 +57,7 @@ rownames(difference.mat) <- c('0.25%','0.5%','0.75%','1%','1.25%','1.5%','1.75%'
 
 plot(
   difference.mat,
-  main = "Heatmap of differences of random simulations, (poisson - binomial)",
+  main = "Heatmap of differences of, (poisson - binomial)",
   xlab = "n",
   ylab = "population prevalence",
   key = list(side = 3, cex.axis = 0.5)
@@ -66,6 +76,12 @@ ggplot(difference.df, aes(n, difference, group = pop_prev, colour = pop_prev)) +
   geom_line() +
   geom_point(size = 4, shape = 21, fill="white") +
   ggtitle("Exact Binomial vs Poisson Approximation") +
-  scale_colour_discrete("Population Prevalence") +
+  scale_colour_discrete("Pop Prev") +
   labs(y = "difference (Poisson - Binomial)") +
   theme(legend.position = "bottom")
+```
+
+# Part C
+In general, because sampling is so expensive, the most cost effective option is to use a Poisson approximation with a sample size of 80, and assuming a population prevalence of 0.25%. However, we can always dream about the world where we have unlimited money. If we were to have unlimited money, we could sample with n = 400, and assume a population prevalence of 2.5%. The difference between a binomial probability and the Poisson approximation to the binomial probability is negligible at n = 400, p = 0.025.
+
+Rosner's recommendation is to use the Poisson approximation when n >= 100 and p <= 0.01. At least from the plot provided above, I am gathering that while the difference is again negligible when n = 80 (we are talking about a maximum difference of 0.0035, or 0.35%), our best simulations are coming at n >= 320 (difference of sample p < 0.001). Note that the plot provides evidence of convergence as n increases, which while the cut off suggested by Rosner is 100, our plot still supports the theory that as n get large, the difference is no longer significant. I would also argue that in this simulation, population prevalence becomes irrelevant as n gets large.

@@ -15,7 +15,8 @@ binomial_prob
 poisson_prob <- ppois(0.025, N * P)
 poisson_prob
 ```
-  
+I would call the difference between the binomial estimation technique and the poisson approximation to the binomial estimation negligible. The difference between the two is about 1%. As we increase the sample size this difference will decrease.
+
 # Part B
 ```{r, echo = TRUE, include = TRUE}
 library(plot.matrix)

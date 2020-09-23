@@ -1,0 +1,50 @@
+---
+title: "Question 2"
+author: "Joseph Froelicher"
+date: "9/24/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+```
+
+# Part A
+```{r}
+set.seed(8675309)
+
+rand.norm <- rnorm(10000, 125, 8)
+rand.exp <- rexp(10000, 1.5)
+head(rand.norm)
+head(rand.exp)
+```
+
+# Part B
+```{r}
+rand.norm.mean <- mean(rand.norm)
+rand.norm.sd <- sd(rand.norm)
+rand.norm.mean
+rand.norm.sd
+
+rand.exp.mean <- mean(rand.exp)
+rand.exp.sd <- sd(rand.exp)
+rand.exp.mean
+rand.exp.sd
+```
+
+For the normal distribution the mean and standard deviation are $\mu = 125$ and $\sigma = 8$. Our simulated mean and standard deviations look appropriate. 
+
+https://en.wikipedia.org/wiki/Normal_distribution
+
+The mean and standard deviation are both $\frac{1}{\lambda}$ for the exponential distribution. Our simulated results are close enough to the theorhetical mean of $\frac{1}{1.5}$.
+
+https://en.wikipedia.org/wiki/Exponential_distribution
+
+# Part C
+```{r}
+hist(rand.norm, main = "Random Normal with n = 10,000")
+boxplot(rand.norm, main = "Random Normal with n = 10,000")
+
+hist(rand.exp, main = "Random Exponential with n = 10,000")
+boxplot(rand.exp, main = "Random Exponential with n = 10,000")
+```

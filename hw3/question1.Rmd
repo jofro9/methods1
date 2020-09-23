@@ -1,0 +1,24 @@
+---
+title: "Question 1"
+author: "Joseph Froelicher"
+date: "9/24/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+```
+# Part C
+```{r}
+set.seed(8675309)
+
+rand <- rexp(100000, 3)
+rand.mean <- mean(rand)
+rand.var <- var(rand)
+rand.mean
+rand.var
+```
+The simulated values are very close to the calculated expectations for mean and varicance from parts A and B.
+  
+# Part D
+The expected wait time does not change from part A, based on a time parameter (t) when using the exponential distribution. Mathematically there is no time parameter for expectations when values are distributed exponentially.

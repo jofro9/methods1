@@ -1,0 +1,33 @@
+---
+title: "Question 2, Unknown Standard Deviation"
+author: "Joseph Froelicher"
+date: "10/1/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+```
+
+```{r}
+A <- power.t.test(n=5, delta=100, sd=75, sig.level=0.05, power=NULL, type='one.sample')
+A$power
+```
+Power for this unknown standard deviation case is 61.4%.
+  
+```{r}
+B <- power.t.test(n=NULL, delta=100, sd=75, sig.level=0.05, power=0.9, type='one.sample')
+B$n
+```
+The number of participant required for this study with unknown standard deviation is 8.07, which we always round up to 9 participants.
+  
+```{r}
+C <- power.t.test(n=5, delta=NULL, sd=75, sig.level=0.05, power=0.9, type='one.sample')
+C$delta
+```
+The smallest mean change in beta carotene required for this scenario with unknown standard deviation and 90% power is 147.4.  
+```{r}
+D <- power.t.test(n=5, delta=NULL, sd=75, sig.level=0.05, power=0.8, type='one.sample')
+D$delta
+```
+The smallest mean change in beta carotene required for this scenario with unknown standard deviation 80% power is 126.1.

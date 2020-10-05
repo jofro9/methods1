@@ -1,0 +1,128 @@
+---
+title: "Question 3"
+author: "Joseph Froelicher"
+date: "10/1/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+```
+
+# Part A
+```{r}
+n <- 5
+mu <- 0
+sd <- 75
+alpha <- 0.05
+iter <- 10000
+t_mat <- matrix(NA, iter, 3)
+colnames(t_mat) <- c('test.statistic', 'p.value', 'reject')
+
+set.seed(2345)
+
+for (i in 1:iter) {
+  vals <- rnorm(n, mu, sd)
+
+  t_result <- t.test(
+    x = vals,
+    alternative = "two.sided",
+    mu = mu,
+    conf.level = 1 - alpha
+  )
+  
+  t_mat[i, 1] <- t_result$statistic
+  t_mat[i, 2] <- t_result$p.value
+  
+  if (t_result$p.value < alpha) {
+    t_mat[i, 3] <- 1
+  } else {
+    t_mat[i, 3] <- 0
+  }
+}
+
+(1 - sum(t_mat[,3]) / iter) * 100
+```
+Simulating a one-sample t-test 10,000 times, under the null hypothesis, with a mean of 0 and a standard deviation of 75, we can see that power of rougly 95% is obtained. This supports our claim that the null hypothesis of mean equal to 0 will in fact reject about 5% of the time.
+  
+# Part B
+```{r}
+# function definition
+simNull <- function(n, mu, sd, alpha, iter) {
+  power <- vector("double", iter)
+  set.seed(2345)
+  
+  for (i in 1:iter) {
+    vals  <- rnorm(n, mu, sd)
+    z_alpha <- qnorm(1 - (alpha / 2))
+    delta <- abs(mu - mean(vals))
+    se <- sd / sqrt(n)
+    power[i] <- (delta / se) - z_alpha
+  }
+  
+  mean_power <- (1 - pnorm(mean(power))) * 100
+  median_power <- (1 - pnorm(median(power))) * 100
+  
+  return(data.frame('power mean' = mean_power, 'power median' = median_power))
+}
+
+# testing
+simNull(5, 0, 75, 0.05, 10000)
+
+```
+
+# Part C
+```{r}
+mu0 <- 0
+mu1 <- 100
+sd <- 75
+n <- 5
+alpha <- 0.05
+iter <- 10000
+power_vec <- vector("double", iter)
+
+set.seed(1796)
+
+for (i in 1:iter) {
+  vals0 <- rnorm(n, mu0, sd)
+  vals1 <- rnorm(n, mu1, sd)
+  
+  p <- power.t.test(n, mean(vals0) - mean(vals1), sd, alpha, power = NULL, type='one.sample')
+  power_vec[i] <- p$power
+}
+
+mean(power_vec)
+median(power_vec)
+```
+# Part 
+Simulating a one-sample t-test 10,000 times, under the alternative hypothesis, with a target mean of difference of 100 and a standard deviation of 75, we would assume a power level of roughly 60%. 
+  
+# Part D
+```{r}
+# function definition
+simAlternative <- function(n, mu0, mu1, sd, alpha, iter) {
+  power <- vector("double", iter)
+  set.seed(8675309)
+  
+  for (i in 1:iter) {
+    vals0  <- rnorm(n, mu0, sd)
+    vals1  <- rnorm(n, mu1, sd)
+    
+    z_alpha <- qnorm(1 - (alpha / 2))
+    delta <- abs(mean(vals0) - mean(vals1))
+    se <- sd / sqrt(n)
+    power[i] <- (delta / se) - z_alpha
+  }
+  
+  mean_power <- (1 - pnorm(mean(power))) * 100
+  median_power <- (1 - pnorm(median(power))) * 100
+  
+  return(data.frame('power mean' = mean_power, 'power median' = median_power))
+}
+
+# testing
+simAlternative(5, 0, 100, 75, 0.05, 10000)
+```
+
+# Part E
+The answer from Exercise 2, Part A, unknown standard deviation, matches very cloesly with our answer from scenario 2 for power. We would expect our calculation using power.t.test under the alternative hypothesis of mean difference 100 to look very similar to a 10,000 iteration simulation with random values that have mean differece of 'approximately' or 'simulated' 100.

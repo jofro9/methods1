@@ -1,0 +1,16 @@
+---
+title: "Question 1"
+author: "Joseph Froelicher"
+date: "10/1/2020"
+output: word_document
+---
+
+Douglas W. Hubbard & Alicia L. Carriquiry (2019) Quality Control for Scientific Research: Addressing Reproducibility, Responsiveness, and Relevance, The American Statistician, 73:sup1, 46-55, DOI: 10.1080/00031305.2018.1543138
+
+"Quality Control for Scientific Research: Addressing Reproducibility, Responsiveness, and Relevance"
+
+Hubbard and Carriquiry take a very interesting approad to the p-value dilemma. The stage is set by understanding the history of statistics and the basis of the p-value. New to me was the bit about how we settled on the p-value of 0.05 sort of arbitrarily. It seems as though 0.05 was somewhere in the middle of two schools of thought on p-values, where we ended up with a value that satistifed neither group.
+
+The main content of this article is bringing light to the use of prior information, for discrimination in our calculations about populations. This is especially useful when there is existing research about a given population, and in turn we can build relationships between prior infomation, and posterior information. Prior information can come in different manners in a study as well. In some cases it may be useful to bring on experts and reviewers in a field to help with interventions and study design, before the initiation of the study itself.
+
+One final note from this paper was a bit about quality control in science. According to Hubbard and Carriquiry, by employing our Level 1 and Level 2 priors, we are able to increase resposiveness significantly. This is especially useful for collecting metadata, and creating a psuedo-quality control environment. Increased responsiveness allows journals to collect more and more metadata, increasing the feedback structure for academic publishing. And in conclusion, it is easy to see why the authors would be proposing a structure that requires prior information to always be used in academic research.

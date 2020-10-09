@@ -1,0 +1,92 @@
+---
+title: "Question 1"
+author: "Joseph Froelicher"
+date: "10/8/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+
+
+cmms <- data.frame(
+  'cmms.score' = c('0-5', '6-10', '11-15', '16-20', '21-25', '26-30'),
+  'non_demented' = c(0, 0, 3, 9, 16, 18),
+  'demented' = c(2, 1, 4, 5, 3, 1),
+  row.names = 1
+)
+
+cmms
+```
+# Part A
+```{r}
+twenty_table <- data.frame(
+  'demented' = c(sum(cmms[1:4, 2]), sum(cmms[5:6, 2])),
+  'non_demented' = c(sum(cmms[1:4, 1]), sum(cmms[5:6, 1]))
+)
+
+rownames(twenty_table) <- c('below_20', 'above_20')
+twenty_table
+```
+# Part B
+```{r}
+sensitivity <- twenty_table[1, 1] / ( twenty_table[1, 1] + twenty_table[2, 1] )
+sensitivity
+
+specificity <- twenty_table[2, 2] / ( twenty_table[1, 2] + twenty_table[2, 2] )
+specificity
+```
+If someone has a CMMS score below 20, then there is a `r sensitivity * 100`% probability that they will be clinically diagnosed with dementia. And if someone scored above 20 on the CMMS Test, then there is a `r specificity * 100`% probability that they will not be clinically diagnosed with dementia.
+  
+# Part C
+```{r}
+pvp <- twenty_table[1, 1] / ( twenty_table[1, 1] + twenty_table[1, 2] )
+pvp
+
+pvn <- twenty_table[2, 2] / ( twenty_table[2, 1] + twenty_table[2, 2] )
+pvn
+```
+If CMMS test score is below 20, then there is a `r pvp * 100`% probability that a diagnosis of dimentia is a true diagnosis. And, if CMMS test score is above 20, then there is a `r pvn * 100`% probability that a diagnosis of not dimentia is a true diagnosis.
+  
+# Part D
+In the conext of this problem, a false positive would mean that someone has scored below a 20 on the CMMS test, and has not been diagnosed with dementia. Similarly, a false negative would mean that someone has scored above a 20 on the CMMS test, and was diagnosed with dementia. Because dementia patients take drugs that we would categorize as depressants, and false negative is probably going to be more detrimental here. We wouldn't want to give depressants, or mood supressors to someone who was not in need. A false positive would mean that someone is not being diagnosed with dementia that really does have dementia. This would mean they are missing out on treatment that could significantly affect the trajectory of their lives going forward.
+  
+# Part E
+```{r}
+library(pROC)
+
+cmms_roc <- matrix(data = NA, nrow = sum(cmms$non_demented) + sum(cmms$demented), ncol = dim(cmms)[2])
+iter1 <- 1
+iter2 <- 1
+
+for (i in cmms$non_demented) {
+  if (i > 0) {
+    for (j in 1:i) {
+      cmms_roc[iter1,] <- c(rownames(cmms[iter2,]), 1)
+      iter1 <- iter1 + 1
+    }
+  }
+  
+  iter2 <- iter2 + 1
+}
+
+iter2 <- 1
+
+for (i in cmms$demented) {
+  if (i > 0) {
+    for (j in 1:i) {
+      cmms_roc[iter1,] <- c(rownames(cmms[iter2,]), 0)
+      iter1 <- iter1 + 1
+    }
+  }
+  
+  iter2 <- iter2 + 1
+}
+
+cmms_roc
+
+roc <- roc(cmms_roc[,1] ~ as.numeric(cmms_roc[,2]))
+plot(roc)
+roc$auc
+```
+ There is a `r roc$auc * 100`% probability that for a randomly selected pair of a participant with dementia, and a participant without dementia, CMMS test score will rank higher for the participant with dementia.

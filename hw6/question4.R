@@ -1,0 +1,8 @@
+# Part A
+
+hospital <- data.frame(
+  'days' = c(3, 3, 4, 5, 5, 5, 6, 7, 7, 8, 9, 15, 6, 7, 7, 7, 8, 8, 8, 9, 9, 10, 10, 11, 13, 13, 15),
+  'hospital' = c(rep("cauchy", 12), rep("skellam", 15))
+)
+
+

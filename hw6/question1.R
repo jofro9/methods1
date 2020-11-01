@@ -7,10 +7,10 @@ new <- procedure[procedure$Procedure == 2,]
 
 par(mfrow = c(2,2))
 
-hist(new$Cost, main = "Histogram of New Procedure Cost", breaks = 12)
+hist(new$Cost, main = "Histogram of New Procedure Cost", breaks = 12, xlab = "thousands of dollars")
 qqnorm(new$Cost)
 qqline(new$Cost)
-boxplot(new$Cost)
+boxplot(new$Cost, ylab = "thousands of dollars")
 
 # Part B
 

@@ -26,7 +26,7 @@ abline(
 )
 
 # Part B
-P_right <- (sum(boot_ratio >= observed) + 1) / (B + 1)
+p_right <- (sum(boot_ratio >= observed) + 1) / (B + 1)
 p_left <- (sum(boot_ratio <= -observed) + 1) / (B + 1)
 
 # Part C

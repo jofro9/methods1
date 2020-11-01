@@ -1,0 +1,90 @@
+---
+title: "Question 1"
+author: "Joseph Froelicher"
+date: "10/15/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+
+setwd("C:/Users/froelijo/dev/methods1/hw6")
+procedure <- read.csv("ProcedureCost.csv")
+head(procedure)
+```
+
+# Part A
+```{r}
+new <- procedure[procedure$Procedure == 2,]
+
+par(mfrow = c(2,2))
+
+hist(new$Cost, main = "Histogram of New Procedure Cost", breaks = 12, xlab = "thousands of dollars")
+qqnorm(new$Cost)
+qqline(new$Cost)
+boxplot(new$Cost, ylab = "thousands of dollars")
+```
+
+# Part B
+Our data appear to not be normally distributed. On the Normal QQ plot we can see deviations from the normal quantile line. Additionally, we can see from the histogram there is a right skew to our data.
+  
+# Part C
+```{r}
+mean <- mean(new$Cost)
+min <- min(new$Cost)
+first_quarter <- quantile(new$Cost, 0.25)
+median <- median(new$Cost) 
+third_quarter <- quantile(new$Cost, 0.75)
+max <- max(new$Cost)
+sd <- sd(new$Cost)
+var <- var(new$Cost)
+```
+Our data range from `r min` to `r max`, with an inter-quartile range of `r first_quarter` to `r third_quarter`, a median of `r median`, a mean of `r mean`, and a standard deviation of `r sd`.
+
+# Part D
+```{r}
+n <- dim(new)[1]
+B <- 10000
+
+boot_vec <- vector("double", B)
+
+set.seed(8675309)
+
+for (i in 1:B) {
+  val <- sample(new$Cost, n, replace = TRUE)
+  boot_vec[i] <- mean(val)
+}
+
+par(mfrow = c(1, 2))
+hist(boot_vec, main = "Bootstrap of New Cost", breaks = 50, xlab = 'thousands of dollars')
+qqnorm(boot_vec)
+qqline(boot_vec)
+```
+
+# Part E
+This data is generally bell-shaped as seen in the histogram, with slight deviations from the normal quantile line near the tails on the normal QQ plot.
+
+# Part F
+```{r}
+boot_mean <- mean(boot_vec)
+boot_bias <- boot_mean - mean
+boot_se <- sd(boot_vec)
+```
+The boostrap data had an estimated mean of `r boot_mean`, an estimated standard error of `r boot_se`, and an estimated bias of `r boot_bias`.
+  
+# Part G
+```{r}
+alpha = 0.05
+
+normal_lower <- boot_mean - qnorm(1 - (alpha / 2)) * boot_se
+normal_upper <- boot_mean + qnorm(1 - (alpha / 2)) * boot_se
+
+coverage_lower <- sum(boot_vec < normal_lower) / B
+coverage_upper <- sum(boot_vec > normal_upper) / B
+
+boot_lower <- quantile(boot_vec, 0.025)
+boot_upper <- quantile(boot_vec, 0.975)
+
+accuracy <- boot_bias / boot_se
+```
+Based on our estimates of coverage [`r coverage_lower`, `r coverage_upper`], the 95% normal percentile estimates [`r normal_lower`, `r normal_upper`] are too low for both the lower and upper bounds. The lower bound has coverage of `r coverage_lower * 100`%, and the upper bound has coverage of `r coverage_upper * 100`%, these are not close to our target of 2.5%. The 95% bootstrap confidence interval is [`r boot_lower`, `r boot_upper`]. The accuracy of the bootstrap confidence interval is `r accuracy`, which is less than the suggested cutoff of 0.10, indicating good accuracy.

@@ -1,0 +1,58 @@
+---
+title: "Question 4"
+author: "Joseph Froelicher"
+date: "10/15/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+library(BSDA)
+```
+# Part A
+```{r}
+
+observed <- 9
+B <- 1500
+
+los <- data.frame(
+  'days' = c(3, 3, 4, 5, 5, 5, 6, 7, 7, 8, 9, 15, 6, 7, 7, 7, 8, 8, 8, 9, 9, 10, 10, 11, 13, 13, 15),
+  'hospital' = c(rep("cauchy", 12), rep("skellam", 15))
+)
+
+cauchy_test <- SIGN.test(los[los$hospital == "cauchy",]$days, m = observed)
+skellam_test <- SIGN.test(los[los$hospital == "skellam",]$days, m = observed)
+```
+For our one-sample sign test for medians for Cauchy General Hospital, we reject the null hypthesis that the median length of stay is equal to `r observed` days. There fore we can conclude that our sample's median of `r cauchy_test$estimate` is significantly different than the historic median of `r observed` days. And, our one-sample sign test for medians for Skellam Memorial Hospital, we fail to reject the null hypthesis that the median length of stay is equal to `r observed` days. There fore we cannot conclude that our sample's median of `r cauchy_test$estimate` is significantly different than the historic median of `r observed` days.
+  
+# Part B
+```{r}
+par(mfrow = c(1, 2))
+
+hist(
+  los[los$hospital == "cauchy",]$days,
+  xaxt = 'n',
+  breaks = c(0, 2, 4, 6, 8, 10, 12, 14, 16),
+  main = 'LOS, Cauchy General',
+  xlab = 'days',
+  ylab = 'count',
+  ylim = c(0, 6)
+)
+axis(1, at = seq(0, 16, by = 2), labels = seq(0, 16, by = 2))
+
+hist(
+  los[los$hospital == "skellam",]$days,
+  xaxt = 'n',
+  breaks = c(0, 2, 4, 6, 8, 10, 12, 14, 16),
+  main = 'LOS, Skellam Memorial',
+  xlab = 'days',
+  ylab = 'count'
+)
+axis(1, at = seq(0, 16, by = 2), labels = seq(0, 16, by = 2))
+```
+
+# Part C
+```{r}
+mann_whitney <- wilcox.test(los$days ~ los$hospital)
+```
+A mann-Whitney test showed that there was a significant difference (p = `r mann_whitney$p.value`) between Cauchy General Hospital, and Skellam General Hospital. Meaning that the differnce between the two hospitals is not equal to zero. As we can see from the histograms, Cauchy General Hospital has a right skew, and Skellam Memorial Hospital also has a right skew, but they have very different peaks in appearance.

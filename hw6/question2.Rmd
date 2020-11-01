@@ -1,0 +1,69 @@
+---
+title: "Question 2"
+author: "Joseph Froelicher"
+date: "10/15/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+
+setwd("C:/Users/froelijo/dev/methods1/hw6")
+procedure <- read.csv("ProcedureCost.csv")
+head(procedure)
+old <- procedure[procedure$Procedure == 1,]
+new <- procedure[procedure$Procedure == 2,]
+head(new)
+head(old)
+```
+# Part A
+```{r}
+n1 <- dim(new)[1]
+n2 <- dim(old)[1]
+
+B <- 10000
+
+boot_ratio <- vector("double", B)
+
+set.seed(8675309)
+
+for (i in 1:B) {
+  val1 <- sample(new$Cost, n1, replace = TRUE)
+  val2 <- sample(old$Cost, n2, replace = TRUE)
+  
+  boot_ratio[i] <- mean(val1) - mean(val2)
+}
+
+par(mfrow = c(1, 2))
+hist(boot_ratio, main = "Bootstrap of Ratio", breaks = 50, xlab = 'difference of means(new - old)')
+qqnorm(boot_ratio)
+qqline(boot_ratio)
+```
+  
+# Part B
+The histogram of the bootstrap data seem to be bell-shaped, with very few outliers from the normal quantile line on the normal QQ plot. 
+
+# Part C
+```{r}
+boot_mean <- mean(boot_ratio)
+boot_bias <- boot_mean - (mean(new$Cost) - mean(old$Cost))
+boot_se <- sd(boot_ratio)
+```
+
+# Part D
+```{r}
+alpha = 0.05
+
+normal_lower <- boot_mean - qnorm(1 - (alpha / 2)) * boot_se
+normal_upper <- boot_mean + qnorm(1 - (alpha / 2)) * boot_se
+
+coverage_lower <- sum(boot_ratio < normal_lower) / B
+coverage_upper <- sum(boot_ratio > normal_upper) / B
+
+boot_lower <- quantile(boot_ratio, 0.025)
+boot_upper <- quantile(boot_ratio, 0.975)
+
+accuracy <- boot_bias / boot_se
+```
+
+Based on our estimates of coverage [`r coverage_lower`, `r coverage_upper`], the 95% normal percentile estimates [`r normal_lower`, `r normal_upper`] are pretty good for both the lower and upper bounds. The lower bound has coverage of `r coverage_lower * 100`%, and the upper bound has coverage of `r coverage_upper * 100`%, these are close to our target of 2.5%. The 95% bootstrap confidence interval is [`r boot_lower`, `r boot_upper`]. The accuracy of the bootstrap confidence interval is `r accuracy`, which is less than the suggested cutoff of 0.10, indicating good accuracy.

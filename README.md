@@ -1,4 +1,4 @@
-# methods1
+# Biostatistical Methods 1 - Colorado School of Public Health
 # Dr. Alex kaizer
 # Fall 2020
 

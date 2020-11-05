@@ -1,0 +1,87 @@
+---
+title: "Question 2"
+author: "Joseph Froelicher"
+date: "11/5/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+
+library(tidyverse)
+library(ggplot2)
+library(pacman)
+library(jpeg)
+```
+
+``` {r}
+# Data
+hw7 <- data.frame(
+  id = 1:7,
+  gender = c(0,1,0,1,0,1,0),
+  chol = c(254,402,288,354,220,451,405),
+  wtkg = c(57,79,63,84,30,76,65),
+  age = c(23,57,28,46,34,57,52)
+)
+```
+
+
+```{r}
+# Linear regression cholesterol and weight
+fit_lm <- lm(chol ~ hw7$wtkg, data = hw7)
+
+# Info for table
+sum <- summary(fit_lm)
+sum
+
+ci_lm <- confint(fit_lm)
+ci_lm
+
+```
+# Part A
+```{r}
+table <- cbind(sum$coefficients, ci_lm)
+table
+```
+# Part B
+$y = b_0 + b_1X + e$  
+y = `r sum$coefficients[1, 1]` + `r sum$coefficients[2, 1]`
+$X$
+
+# Part C
+Intercept: `r sum$coefficients[1, 1]`   
+Average cholesterol if weight is zero kilograms is `r sum$coefficients[1, 1]` (probably not interpretable).
+
+# Part D
+95% confidence interval: [`r ci_lm[1, 1]`, `r ci_lm[1, 2]`]  
+We can say with 95% confidence that at weight zero, average Cholesterol is between `r ci_lm[1, 1]` and `r ci_lm[1, 2]`.
+
+# Part E
+Fail to reject the hypothesis that the true intercept is 0, based on our confidence interval [`r ci_lm[1, 1]`, `r ci_lm[1, 2]`] contains 0.
+
+# Part F
+Estimated slope: `r sum$coefficients[2, 1]`
+For a unit increase in weight, for persons with weight between 30 and 84 kilograms, average cholesterol increases by `r sum$coefficients[2, 1]` mg/100ml.
+
+# Part G
+95% confidence interval: [`r ci_lm[2, 1]`, `r ci_lm[2,2]`]
+We can say with 95% confidence that the average increase in Cholesterol is between `r ci_lm[2, 1]` and `r ci_lm[2, 2]` for a unit increase in weight.
+
+# Part H
+The 95% confidence interval for the slope of the regression line of weight and cholesterol does not contain 0. Therefore, we reject that hypothesis that the true slope of the regression line of weight and cholesterol is equal to 0.
+
+# Part I
+There is a significant increase in plasma levels of total cholesterol (mg/100mL) for increasing weight (kg) in individuals (p = 0.388). On average, the plasma levels of total cholesterol increases by `r sum$coefficients[2, 1]` mg/100mL (95% CI: `r ci_lm[2, 1]` to `r ci_lm[2, 2]` mg/100mL) for every 1 kg increase in weight.
+
+# Part J
+```{r}
+pred <- predict(fit_lm, newdata = data.frame(hw7_new=50), interval='prediction')
+hw7_new <- cbind(hw7, pred)
+
+ggplot(data = hw7_new, aes(x = wtkg, y = chol)) +
+  geom_point() +
+  geom_line(aes(y = lwr), color = "purple", linetype = "twodash")+
+  geom_line(aes(y = upr), color = "purple", linetype = "twodash")+
+  geom_smooth(method = lm, se = TRUE, color = "orange") +
+  labs(title = 'Simple Linear Regression: Weight vs. Cholesterol', x = 'Weight (kg)', y = 'Cholesterol (mg/100mL)') 
+```

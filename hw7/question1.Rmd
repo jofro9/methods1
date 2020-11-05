@@ -1,0 +1,8 @@
+---
+title: "Question 1"
+author: "Joseph Froelicher"
+date: "11/5/2020"
+output: word_document
+---
+
+The problem at hand is comaparing two independent identically distributed random variables. The initial test is a F test of equal variances at a given alpha level, where the rejection criterion is one minus alpha. Based on the rejection criterion, either a t-test or a Smith-Welch-Satterthwaite adjustment for the t-test. There were three results from their testing, always t test (AT), sometimes t test (ST), always Smith-Welch-Satterthwaite test (ASWS). When sample size is equal then all three results had similar power and size. If sample size was unequal with variance ratio close to one, then the AT had largest power. If sample size was unequal, variance ratio far from one, and the larger sample had smaller variance, then we would use the test in the following order: AT, ST, ASWS. Lastly, if sample size was unequal, with variance ratio far from one, and the larger sample size had larger variance, then the tests had highest power in the following order: ASWS, ST, AT. At the very least, this paper has shown me that it is important to examine variance in the context of sample size, and in terms of equal variance, and we now have an appropriate way to apply t-test given those two pieces of information.  

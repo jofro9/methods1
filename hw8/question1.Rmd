@@ -1,0 +1,12 @@
+---
+title: "Question 1"
+author: "Joseph Froelicher"
+date: "11/12/2020"
+output: word_document
+---
+
+  The paper "Hidden in Plain Sight--Reconsidering the Use of Race Correction in Clinical Algorithms", by Drs. Vyas Eisenstein and Jones, the researcher get at the heart of the issues raised by using Race and Ethnicity within medical research. At times it can be almost impossible to seperate various social factors with biological and physiological factors that are based upon race and ethnicity. This pushes doctors and other clinicians to make adjustments in their practices, which furthers the problem of race based medicine. Despite growing knowledge that genetics are at most marginally affected by race, the issue of race based medicine pervades.
+  
+  The paper discusses four specific branches of medicine, where race has been especially prevelant within the scope of race-adjusted algorithms in medicial treatment and research: Cardiology, Nephrology, Obstetrics, Urology. This is certainly not a complete list of all medical practices that employ race-adjusted algorithms, however. 
+  
+  The point that the researcher, Dr. Melanie Wall makes in her blog post, is not that we need to stop regarding race or ethnicity as an important covariate or effect modifier in our research, but rather that we need to be very careful about how we interpret data in the context of race. Keeping in mind that race in the United States means a lot more about experiences in the social world than it does about any sort of biological or genetic differences. We absolutely cannot leave a race variable in research open for interpretation, that allows for readers to draw their own potentially dangerous conclusions about race in the context of the research at hand.

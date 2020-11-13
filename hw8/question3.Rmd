@@ -1,0 +1,67 @@
+---
+title: "Question 1"
+author: "Joseph Froelicher"
+date: "11/12/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+library(car)
+
+setwd("C:/Users/froelijo/dev/methods1/hw8")
+fram <- read.csv("frmgham2_baseline_subset.csv")
+```
+# Part A
+$Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \beta_3X_3 + \beta_4X_4 + \beta_5X_5 + \beta_6X_6 + e_i$  
+Where, $\beta_0$ is the y-intercept, $X_1$ is smoking status (CURSMOKE), $X_2$ is body mass index (BMI), $X_3$ is prevalent coronary heart disease (PREVCHD), $X_4$ is prevalent myocardial infarction (PREVMI), $X_5$ is prevalent stroke (PREVSTRK), and $X_6$ is prevalent hypertensive (PREVHYP). $\beta_1$ through $\beta_6$ are the slopes for each corresponding variable mentioned.
+
+# Part B
+```{r}
+fram <- fram[,c(3, 7, 9, 15, 17, 18, 19)]
+dim(fram)
+
+for(column in 1:dim(fram)[2]) {
+  fram <- fram[!is.na(fram[,column]),]
+}
+
+dim(fram)
+```
+
+# Part C
+```{r}
+fit_full <- glm(TOTCHOL ~ CURSMOKE + BMI + PREVCHD + PREVMI + PREVSTRK + PREVHYP, data = fram)
+fit_empty <- glm(TOTCHOL ~ 1, data = fram)
+anova(fit_full, fit_empty, test = "F")
+```
+  
+$$H_0: \beta_{smoker} = \beta_{bmi} = \beta_{heart} = \beta_{mi} = \beta_{stroke} = \beta_{hyp} = 0,\: \alpha = 0.05$$
+$$H_A: at\:least\:one\:\beta_k \neq 0$$
+There is evidence to suggest (p < 0.0001) that we should reject the null hypothesis that all of our coefficients in the full multiple linear regression model have a slope of zero. At least one coefficient is non zero.
+  
+# Part D
+```{r}
+fit_nocardio <- glm(TOTCHOL ~ CURSMOKE + BMI, data = fram)
+anova(fit_full, fit_nocardio, test = "F")
+```
+$$H_0: \beta_{heart} = \beta_{mi} = \beta_{stroke} = \beta_{hyp} = 0,\: \alpha = 0.05$$
+$$H_A: at\:least\:one\:cardio\:\beta_k \neq 0$$
+There is evidence to suggest that we should reject the null hypothesis (p < 0.0001) that all of our cardiovascular condition slopes are zero. At least one of the cardiovascular condition slopes is non-zero.
+
+# Part E
+```{r}
+fit_nosmoke <- glm(TOTCHOL ~ BMI + PREVCHD + PREVMI + PREVSTRK + PREVHYP, data = fram)
+anova(fit_full, fit_nosmoke, test = "F")
+```
+$$H_0: \beta_{smoker} = 0,\: \alpha = 0.05$$
+$$H_A: \beta_{smoker} \neq 0$$
+There is not significant evidence to suggest that we should reject the null hypothesis (p = 0.1163) that all of our cardiovascular conditions slopes are zero, so we will fail to reject the null hypothesis. The slope for smoking status is not significantly different than zero.
+
+# Part F
+```{r}
+vif(fit_full)
+```
+None of our variance inflation factors for any of the variables are greater than our usual cutoff of 10. In fact they are not even notably close. While based on the description of the variables, we may be concerned with collinearity between similar cardiovascular conditions, the measures of variance inflation factor do not suggest that there is any collinearity between the independent variables.
+
+# Part G
+In the presence of smoking status and the four cardiovascular conditions (heart disease, myocardial infarction, stroke, and hypertension), a unit increase in body mass index (BMI) is accounting for a `r fit_full$coefficients[3]` increase in total cholesterol.

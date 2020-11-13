@@ -1,0 +1,61 @@
+---
+title: "Question 2"
+author: "Joseph Froelicher"
+date: "11/12/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+
+amniotic <- data.frame(
+  cells = c(
+    1.13, 1.20, 1.00, 0.91, 1.05, 1.75, 1.45, 1.55, 1.64, 1.60, 2.30, 2.15, 2.25, 2.40, 2.49, 3.18, 3.10, 3.28, 3.35, 3.12
+  ),
+  temp = c(
+    rep(40,5), rep(60,5), rep(80,5), rep(100,5)
+  )
+)
+
+amniotic$ln_cells <- log(amniotic$cells)
+```
+
+# Part A
+```{r}
+fit_a <- lm(ln_cells ~ temp, data = amniotic)
+summary(fit_a)
+
+coeff <- fit_a$coefficients
+
+coeff_t <- exp(fit_a$coefficients)
+ci_t <- exp(confint(fit_a))
+```
+
+log(cells) = `r coeff[1]` + `r coeff[2]` $X_{temp}$  
+
+For a unit increase in temperature, we would expect an average increase `r coeff[2]` in log cells. And for temperature 0 the expected log cells is `r coeff[1]`.
+
+For a unit increase in temperature, we would expect an average of `r (coeff_t[2] - 1) * 100` increase in cells. And for temperature 0 the geometric mean of expected cells is `r coeff_t[1]`.
+
+# Part B
+```{r}
+par(mfrow = c(2, 2))
+
+plot(x = amniotic$temp, y = amniotic$ln_cells, main = 'Scatterplot')
+abline(fit_a)
+
+plot(x = amniotic$temp, y = rstudent(fit_a), main = "Jackknife Scatterplot")
+abline(h = 0, lty = 2)
+
+hist(x = rstudent(fit_a), freq = FALSE, main = "Jacknife Histogram")
+curve(dnorm(x, mean = 0, sd = 1), add = TRUE)
+
+plot(ppoints(length(rstudent(fit_a))), sort(pnorm(rstudent(fit_a))), main = "Normal P-P")
+abline(a = 0, b = 1)
+```
+  
+There are so few data, it is really hard to see whether any of our assumptions are being violated. There is some evidence from the Jackknife Scatterplot that the error variance is not distributed equally, but again, I would call that minimal evidence, and not necessarily cause for concern.
+
+# Part C
+There is a significant increase in the number of human amniotic cells grown in a tissue culture of a certain medium (p < 0.0001). On average, the number of human amniotic cells grown in a tissue culture of a certain medium increases by `r (coeff_t[2] - 1) * 100`% (95% CI: `r (ci_t[2, 1] - 1) * 100`% to `r (ci_t[2, 2] - 1) * 100`%) for a unit increase in temperature.
+

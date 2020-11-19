@@ -1,0 +1,43 @@
+---
+title: "Question 1"
+author: "Joseph Froelicher"
+date: "11/19/2020"
+output: pdf_document
+---
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+snp <- c(0.04, 0.1, 0.4, 0.55, 0.34, 0.62, 0.001, 0.010, 0.8, 0.005)
+alpha <- 0.05
+```
+
+```{R}
+snp_bonferroni <- p.adjust(snp, method = "bonferroni")
+snp_fdr <- p.adjust(snp, method = "fdr")
+
+counter1 <- 0
+
+for(i in 1:length(snp_bonferroni)) {
+  if(i == 1){
+    print("After a bonferroni correction for multiple comparisons:")
+  }
+  if(snp_bonferroni[i] <= alpha) {
+    print(c("P-value", i , "was significant"), quote = FALSE)
+    counter1 <- counter1 + 1
+  }
+}
+
+counter2 <- 0
+
+for(i in 1:length(snp_fdr)) {
+  if(i == 1){
+    print("After a false discovery rate correction for multiple comparisons:")
+  }
+  if(snp_fdr[i] < alpha) {
+    print(c("P-value ", i, " was significant."), quote = FALSE)
+    counter2 <- counter2 + 1
+  }
+}
+```
+  
+A total of `r counter1` p-values were significant after a bonferroni correction. And a total of `r counter2` p-values were significant after a false discovery rate correction.

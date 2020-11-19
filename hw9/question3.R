@@ -47,7 +47,6 @@ anova(fit_smokecal, fit_empty, test = "F")
 
 # Part D
 
-
 # Part E
 fit_smoke <- glm(betaplas ~ smoke, data = carotenoids)
 anova(fit_smoke, fit_empty, test = "F")

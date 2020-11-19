@@ -1,1 +1,53 @@
+---
+title: "Question 2"
+author: "Joseph Froelicher"
+date: "11/19/2020"
+output: pdf_document
+---
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+options(scipen = 999)
+
+library(DescTools)
+
+alpha <- 0.05
+
+lung <- data.frame(
+  group=c(
+    rep('A',5),
+    rep('B',12),
+    rep('C',5)
+  ),
+  react=c(
+    20.8,4.1,30,24.7,13.8,7.5,7.5,11.9,4.5,3.1,8,
+    4.7,28.1,10.3,10,5.1,2.2,9.2,2,2.5,6.1,7.5
+  )
+)
+```
+
+# Part A
+```{r}
+oneway_test <- oneway.test(react ~ group, data = lung, var.equal = TRUE)
+```
+$$H_0: \mu_a = \mu_b = \mu_c$$
+$$H_0: \mu_a\neq\mu_b\:or\:\mu_a\neq\mu_c,\:or\:\mu_b\neq\mu_c$$
+
+We reject the null hypothesis that there is no mean difference between groups A, B and C ($\alpha$ = `r alpha`. At least one group mean is different from another.
+
+# Part B
+```{r}
+aov <- aov(react ~ group, data = lung)
+hsd <- PostHocTest(aov, method = "hsd")
+p1 <- hsd$group[1,4]
+p2 <- hsd$group[2,4]
+```
+  
+After comparing the groups, two p-values were significant, (A to B and A to C, with $\alpha$ = `r alpha`), and with the number of groups being at least 3 (number of comparisons at least 3) then we should perform a post-hoc Tukey-HSD test for multiple comparisons. After performing a post-hoc Tukey's HSD test, group A is still significantly different than group B (p = `r p1`), and group A is still significantly different than group C p = `r p2`)
+
+# Part C
+```{r}
+oneway_test <- oneway.test(react ~ group, data = lung, var.equal = FALSE)
+```
+  
+In this case it is not necessary to do any more post-hoc analyses, the p-value is non-significant, post-hoc analyses will not make our result significant.

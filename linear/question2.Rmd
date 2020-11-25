@@ -1,0 +1,19 @@
+---
+title: "Question 2"
+author: "Joseph Froelicher"
+date: "11/24/2020"
+output: word_document
+---
+
+# Part A
+  
+The principal component according to the paper, is a line that can be drawn where, if the data are mapped onto that line, the mapped data have the most variability (highest variance). According to the paper, this is the horizontal line drawn through the oval of triangles.
+  
+# Part B
+One of the fundamental pieces of PCA is that the components are orthogonal, so in the triangle example, in order to span the entire 2-D plane in which the triangles exist, the prinicpal components must be orthogonal.
+  
+# Part C
+The third eigenvalue represents out z-direction. In the triangle example, since we are dealing with a 2-Dimensional plane, our value in the z-direction is always going to be 0.
+  
+# Part D
+In the OxIS 2013 example, the dimension of the data set was reduced from 50 to 4. For clarity, the article does not actually state the orginal dimension of the data, but rather provides 50 as an example. "Lets say they asked each perso 50 questions..."

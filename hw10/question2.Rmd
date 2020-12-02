@@ -1,0 +1,87 @@
+---
+title: "Question 2"
+author: "Joseph Froelicher"
+date: "December 3, 2020"
+output: pdf_document
+---
+```{r, echo = false}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+setwd("C:/Users/froelijo/dev/methods1/hw10")
+lead = read.csv('lead2.csv')
+```
+
+# Part A
+```{r}
+fit1 = lm(iq ~ expose, data = lead)
+fit2 = lm(iq ~ expose + resdur, data = lead)
+fit3 = lm(resdur ~ expose, data = lead)
+
+# summary(fit1)
+# summary(fit2)
+# summary(fit3)
+```
+# Part B
+IQ was mediated `r (fit1$coefficients[2] - fit2$coefficients[2]) / fit1$coefficients[2] * 100`% by duration at residence.
+\newline
+# Part C
+```{r}
+se = sqrt(
+  ( fit3$coefficients[2] ^ 2 ) *
+  ( summary(fit2)$coefficients[3, 2] ^ 2 ) +
+  ( fit2$coefficients[3] ^ 2 ) *
+  ( summary(fit3)$coefficients[2, 2] ^ 2 )
+)
+
+z = ( fit1$coefficients[2] - fit2$coefficients[2] ) / se
+p = 2 * pnorm(z)
+
+confint = c(
+  ( fit3$coefficients[2] * summary(fit2)$coefficients[3, 1] ) - (qnorm(0.975) * se ),
+  ( fit3$coefficients[2] * summary(fit2)$coefficients[3, 1] ) + (qnorm(0.975) * se )
+)
+```
+ The 95% confidence interval for percent mediated by duration at residence using the normal approximation to estimate standard error is [`r confint[1]`, `r confint[2]`] with p = `r p`.
+\newline
+# Part D
+```{r}
+n <- dim(lead)[1]
+b <- 10000
+
+prop_vec = vector("double", b)
+se_vec = vector("double", b)
+fit_mat = matrix(NA, nrow = b, ncol = 5)
+
+set.seed(8675309)
+
+for (i in 1:b) {
+  new = lead[sample(nrow(lead), n, replace = TRUE), ]
+  
+  fit1 = lm(iq ~ expose, data = new)
+  fit2 = lm(iq ~ expose + resdur, data = new)
+  fit3 = lm(resdur ~ expose, data = new)
+  
+  fit_mat[i, 1] = fit3$coefficients[2] # gamma_x
+  fit_mat[i, 2] = summary(fit2)$coefficients[3, 2] # se of beta_mediator
+  fit_mat[i, 3] = fit2$coefficients[3] # beta_mediator
+  fit_mat[i, 4] = summary(fit3)$coefficients[2, 2] # se of gamma_x
+  fit_mat[i, 5] = fit1$coefficients[2] - fit2$coefficients[2] # indirect effect
+  
+  prop_vec[i] = (fit1$coefficients[2] - fit2$coefficients[2]) / fit1$coefficients[2]
+}
+
+se_boot = sqrt(
+  ( mean(fit_mat[, 1]) ^ 2 ) *
+  ( mean(fit_mat[, 2]) ^ 2 ) +
+  ( mean(fit_mat[, 3]) ^ 2 ) *
+  ( mean(fit_mat[, 4]) ^ 2 )
+)
+
+boot_confint = c(
+  (mean(prop_vec) - (qnorm(0.975) * se_boot)),
+  (mean(prop_vec) + (qnorm(0.975) * se_boot))
+)
+
+z = mean(fit_mat[, 5]) / se_boot
+p = 2 * pnorm(z)
+```
+The 95% bootstrap confidence interval for the percent mediated is [`r boot_confint[1]`, `r boot_confint[2]`], with p = 

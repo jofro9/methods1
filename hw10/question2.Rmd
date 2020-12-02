@@ -1,0 +1,105 @@
+---
+title: "Question 2"
+author: "Joseph Froelicher"
+date: "December 3, 2020"
+output: 
+  pdf_document:
+    toc: true
+  
+---
+```{r, echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+setwd("C:/Users/froelijo/dev/methods1/hw10")
+lead = read.csv('lead2.csv')
+```
+
+# Part A
+```{r}
+fit1 = lm(iq ~ expose, data = lead)
+fit2 = lm(iq ~ expose + resdur, data = lead)
+fit3 = lm(resdur ~ expose, data = lead)
+
+summary(fit1)
+summary(fit2)
+summary(fit3)
+
+gamma_x = fit3$coefficients[2] # gamma_x
+beta_m = fit2$coefficients[3] # beta_mediator
+beta_adj = fit2$coefficients[2] # beta adjusted
+beta_crude = fit1$coefficients[2] # beta crude
+
+# greek = c("\gamma", "\beta")
+# 
+# paste0("$$", greek[1], " = ", gamma_x, "$$")
+```
+$$\gamma_x\:\:\:\:\:\:\:|\:\:\:\:\:\beta_{adj}\:\:\:\:\:|\:\:\:\:\beta_{crude}\:\:\:\:|\:\:\:\:\:\:\:\beta_m$$
+\center `r gamma_x` | `r beta_m` | `r beta_adj` | `r beta_crude`
+\newline
+\flushleft
+  
+# Part B
+IQ was mediated `r (fit1$coefficients[2] - fit2$coefficients[2]) / fit1$coefficients[2] * 100`% by duration at residence.
+\newline
+
+# Part C
+```{r}
+se = sqrt(
+  ( ( fit3$coefficients[2] ^ 2 ) *
+  ( summary(fit2)$coefficients[3, 2] ^ 2 ) ) +
+  ( ( fit2$coefficients[3] ^ 2 ) *
+  ( summary(fit3)$coefficients[2, 2] ^ 2 ) )
+)
+
+z = (fit1$coefficients[2] - fit2$coefficients[2]) / se
+p = 2 * pnorm(z)
+alpha = 0.05
+
+confint = c(
+  ( ( fit1$coefficients[2] - fit2$coefficients[2] ) - ( qnorm(1 - (alpha / 2)) * se ) ) / fit1$coefficients[2] * 100,
+  ( ( fit1$coefficients[2] - fit2$coefficients[2] ) + ( qnorm(1 - (alpha / 2)) * se ) ) / fit1$coefficients[2] * 100
+)
+```
+ The 95% confidence interval for percent mediated by duration at residence using the normal approximation to estimate standard error is [`r confint[2]`, `r confint[1]`] with p = `r p`.
+\newline
+ 
+# Part D
+```{r}
+n <- dim(lead)[1]
+b <- 10000
+
+se_vec = vector("double", b)
+fit_mat = matrix(NA, nrow = b, ncol = 6)
+
+set.seed(8675309)
+
+for (i in 1:b) {
+  new = lead[sample(nrow(lead), n, replace = TRUE), ]
+  
+  fit1 = lm(iq ~ expose, data = new)
+  fit2 = lm(iq ~ expose + resdur, data = new)
+  fit3 = lm(resdur ~ expose, data = new)
+  
+  fit_mat[i, 1] = fit3$coefficients[2] # gamma_x
+  fit_mat[i, 2] = summary(fit2)$coefficients[3, 2] # se of beta_mediator
+  fit_mat[i, 3] = fit2$coefficients[3] # beta_mediator
+  fit_mat[i, 4] = summary(fit3)$coefficients[2, 2] # se of gamma_x
+  fit_mat[i, 5] = fit1$coefficients[2] - fit2$coefficients[2] # indirect effect
+  fit_mat[i, 6] = fit1$coefficients[2] # total effect
+}
+
+se_boot = sqrt(
+  ( mean(fit_mat[, 1]) ^ 2 ) *
+  ( mean(fit_mat[, 2]) ^ 2 ) +
+  ( mean(fit_mat[, 3]) ^ 2 ) *
+  ( mean(fit_mat[, 4]) ^ 2 )
+)
+
+boot_confint = c(
+  ( mean(fit_mat[, 5]) - ( qnorm(1 - (alpha / 2)) * se_boot ) ) / mean(fit_mat[, 6]) * 100,
+  ( mean(fit_mat[, 5]) + ( qnorm(1 - (alpha / 2)) * se_boot ) ) / mean(fit_mat[, 6]) * 100
+)
+
+z_boot = mean(fit_mat[, 5]) / se_boot
+p_boot = 2 * pnorm(z_boot)
+```
+The 95% bootstrap confidence interval for the percent mediated is [`r boot_confint[2]`, `r boot_confint[1]`], with p = `r p_boot`. This is very similar to what we saw from part C, but as we would expect, it is slightly narrower.

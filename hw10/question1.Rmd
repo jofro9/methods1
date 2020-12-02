@@ -1,0 +1,37 @@
+---
+title: "Question 1"
+author: "Joseph Froelicher"
+date: "December 3, 2020"
+output: pdf_document
+---
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+setwd("C:/Users/froelijo/dev/methods1/hw10")
+lead = read.csv('lead2.csv')
+```
+
+# Part A
+```{r}
+fit1 = lm(iq ~ expose, data = lead)
+a = fit1$coefficients[2]
+```
+On average, those who are exposed to lead have a `r a` point lower IQ score than those who were not exposed.
+\newline
+# Part B
+```{r}
+fit2 = lm(iq ~ expose + sex, data = lead)
+b = fit2$coefficients[2]
+```
+In the presence of sex, those who are expose to lead have a `r b` point lower IQ score than those who were not exposed.
+\newline
+# Part C
+```{r}
+fit3 = lm(sex ~ expose, data = lead)
+c1 = (fit1$coefficients[2] - fit2$coefficients[2]) / fit1$coefficients[2] * 100
+c2 = summary(fit2)$coefficients[3, 4]
+# summary(fit2)
+# summary(fit3)
+```
+Sex is not a confounder of the association between IQ and lead exposure. We should report the result from part A, because it is not accounting for sex in the model. We have established that sex (`r c1`% change, p = `r c2`) is not significant, and therefore, there is no reason to include it in the model.
+

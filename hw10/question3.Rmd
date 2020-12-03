@@ -1,0 +1,134 @@
+---
+title: "Question 3"
+author: "Joseph Froelicher"
+date: "December 3, 2020"
+output: pdf_document
+---
+
+```{r, echo = FALSE, include = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+
+library(tidyverse)
+
+setwd("C:/Users/froelijo/dev/methods1/hw10")
+lead = read.csv('lead2.csv')
+```
+
+# Part A
+```{r, echo = TRUE, include = TRUE}
+fit1 = lm(iq ~ miles + first2y + miles * first2y, data = lead)
+fit1$coefficients
+```
+$$Y_{iq} = \beta_{intercept} + \beta_{miles}X_1 + \beta_{first2y}X_2 + \beta_{interaction}X_1X_2$$
+\center Y = `r fit1$coefficients[1]` + `r fit1$coefficients[2]`X1 + `r fit1$coefficients[3]`X2 + `r fit1$coefficients[4]`X1X2
+
+\flushleft
+The average IQ score for those who live 0 miles from the nearest smelter, and were not exposed during their first two years of life is `r fit1$coefficients[1]`. The difference in IQ score at 0 miles from the nearest smelter between those who were not exposed during their first two years of life, and those that were exposed during their first two years of life is `r fit1$coefficients[2]`. The slope for those who were not exposed during their first two years of life is `r fit1$coefficients[3]`. And the difference in slope between those exposed in their first two years, and those not exposed in their first two years is `r fit1$coefficients[4]`.
+\newline
+  
+# Part B
+```{r, echo = TRUE, include = TRUE}
+summary(fit1)
+```
+$$H_0: \beta_{interaction} = 0$$
+$$H_A: \beta_{interaction} \neq 0$$
+There is evidence to suggest that the difference of of slopes between those who were exposed in their first two years, and those who were not exposed in their first two years is not 0 (p = `r summary(fit1)$coefficients[4, 4]`, [`r confint(fit1)[4, 1]`, `r confint(fit1)[4, 2]`]).
+\newline
+
+# Part C
+$$Y_{iq} = \beta_{intercept} + \beta_{miles}X_1$$
+\center Y = `r fit1$coefficients[1]` + `r fit1$coefficients[2]`X1
+\flushleft
+
+# Part D
+$$Y_{iq} = (\beta_{intercept} + \beta_{first2y}) + \beta_{miles}X_1 + \beta_{interaction}X_1$$
+\center Y = `r fit1$coefficients[1] + fit1$coefficients[3]` + `r fit1$coefficients[2]`X1 + `r fit1$coefficients[4]`X1
+\flushleft
+
+# Part E
+```{r, fig.align = 'center', echo = FALSE, warning = FALSE}
+lead$first2y = if_else(lead$first2y == 1, "Yes", "No")
+
+ggplot(lead, aes(miles, iq, shape = factor(first2y), color = factor(first2y))) +
+  geom_point() +
+  geom_smooth(formula = y ~ x, method = "lm", aes(color = factor(first2y))) +
+  ggtitle("IQ Score by Distance from Smelter") +
+  xlab("Distance (miles)") +
+  ylab("IQ (score)") +
+  scale_x_continuous(breaks = seq(0, 4, 0.5), limits = c(0, 4), minor_breaks = FALSE) +
+  scale_y_continuous(breaks = seq(50, 150, 10), limits = c(50, 150), minor_breaks = FALSE) +
+  labs(shape = "Residence During First 2 Years:", color = "Residence During First 2 Years:") +
+  theme(legend.position = "bottom") +
+  geom_label(
+    label = parse(text = paste0('Y ', '== ~ B[intercept]', '~ + B[miles]', '~ X[1]')), 
+    x = 0.5,
+    y = 150,
+    label.size = 0.35,
+    color = "red"
+  ) +
+  geom_label(
+    label = parse(text = paste0('Y ', '== ~ (B[intercept]', '~ + B[first2y])', '~ + B[miles]', '~ X[1]', '~ + B[interaction]', '~ X[2]')),
+    x = 1.1,
+    y = 140,
+    label.size = 0.35,
+    color = "#00BFC4"
+  )
+```
+
+# Part F
+$$H_0: \beta_{miles} = 0$$
+$$H_A: \beta_{miles} \neq 0$$
+There is not enough evidence to suggest that the slope of those who were not exposed in their first two years is not 0 (p = `r summary(fit1)$coefficients[2, 4]`, ci = [`r confint(fit1)[2, 1]`, `r confint(fit1)[2, 2]`]).
+\newline
+
+# Part G
+```{r, echo = TRUE, include = TRUE}
+vcov = vcov(fit1)
+se = sqrt(vcov[2, 2] + vcov[4, 4] + 2 * vcov[2, 4])
+alpha = 0.05
+
+ci = c(
+  fit1$coefficients[2] + fit1$coefficients[2] - qnorm(1 - (alpha / 2)) * se,
+  fit1$coefficients[2] + fit1$coefficients[2] + qnorm(1 - (alpha / 2)) * se
+)
+
+t = (fit1$coefficients[2] + fit1$coefficients[2]) / se
+p = 2 * pt(t, dim(lead)[1] - 1, lower.tail = FALSE)
+```
+  
+$$H_0: \beta_{miles} + \beta_{interaction} = 0$$
+$$H_A: \beta_{miles} + \beta_{interaction} \neq 0$$
+There is not enough evidence to suggest that the slope of those who were exposed in their first two years is not 0 (p = `r p`, ci = [`r ci[1]`, `r ci[2]`]).
+\newline
+
+# Part H
+Those who were not exposed during their first two years of life are accounting for a `r fit1$coefficients[2]` increase in IQ score for each unit increase in miles from the smelter (95% Confidence Interval: [`r confint(fit1)[2, 1]`, `r confint(fit1)[2, 2]`]). Those who were exposed in their first two years of life are accounting for a `r fit1$coefficients[2] + fit1$coefficients[2]` increase in IQ score (95% Confidence Interval: [`r ci[1]`, `r ci[2]`]). Neither of which is a significant result.
+
+# Part I
+```{r, echo = TRUE, include = TRUE}
+fit_empty = lm(iq ~ miles, lead)
+full = anova(fit1)
+restricted = anova(fit_empty)
+
+rss_restricted = restricted$`Sum Sq`[2]
+rss_full = full$`Sum Sq`[4]
+k_full = ( sum(full$Df)-full$Df[4] )
+k_restricted = ( sum(restricted$Df) - restricted$Df[2] )
+n = nrow(lead)
+
+f = ( (rss_restricted - rss_full) / (k_full - k_restricted) ) / ( rss_full / (n - k_full) )
+p = pf(f, k_full - k_restricted, n - k_full, lower.tail = FALSE)
+q = qf(1 - alpha, k_full - k_restricted, n - k_full, lower.tail = TRUE)
+```
+  
+Null Hypothesis: The full model with miles and first two years and the interaction between, does not account for the variability in IQ score
+  
+Alternative Hypothesis: The full model with miles and first two years and the interaction between, accounts for a significantly more amount of variability in IQ score.
+
+$$F = \frac{(\frac{RSS_{restricted}-RSS_{full}}{k_{full}-k_{restricted}})}{(\frac{RSS_{full}}{n-k_{full}})}$$
+
+F-statistic: `r f`  
+Critical value: `r q`  
+p-value: `r p`  
+
+We reject the null hypothesis that the full model is not better (F(2, 121) = `r f`, p(F > `r q`) = `r p`), in favor of using the full model. There is evidence to suggest that the full model is accounting for significantly more variability than the restricted model.

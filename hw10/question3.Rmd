@@ -88,21 +88,21 @@ se = sqrt(vcov[2, 2] + vcov[4, 4] + 2 * vcov[2, 4])
 alpha = 0.05
 
 ci = c(
-  fit1$coefficients[2] + fit1$coefficients[2] - qnorm(1 - (alpha / 2)) * se,
-  fit1$coefficients[2] + fit1$coefficients[2] + qnorm(1 - (alpha / 2)) * se
+  fit1$coefficients[2] + fit1$coefficients[4] - qnorm(1 - (alpha / 2)) * se,
+  fit1$coefficients[2] + fit1$coefficients[4] + qnorm(1 - (alpha / 2)) * se
 )
 
-t = (fit1$coefficients[2] + fit1$coefficients[2]) / se
+t = (fit1$coefficients[2] + fit1$coefficients[4]) / se
 p = 2 * pt(t, dim(lead)[1] - 1, lower.tail = FALSE)
 ```
   
 $$H_0: \beta_{miles} + \beta_{interaction} = 0$$
 $$H_A: \beta_{miles} + \beta_{interaction} \neq 0$$
-There is not enough evidence to suggest that the slope of those who were exposed in their first two years is not 0 (p = `r p`, ci = [`r ci[1]`, `r ci[2]`]).
+There is evidence to suggest that the slope of those who were exposed in their first two years is not 0 (p = `r p`, ci = [`r ci[1]`, `r ci[2]`]).
 \newline
 
 # Part H
-Those who were not exposed during their first two years of life are accounting for a `r fit1$coefficients[2]` increase in IQ score for each unit increase in miles from the smelter (95% Confidence Interval: [`r confint(fit1)[2, 1]`, `r confint(fit1)[2, 2]`]). Those who were exposed in their first two years of life are accounting for a `r fit1$coefficients[2] + fit1$coefficients[2]` increase in IQ score (95% Confidence Interval: [`r ci[1]`, `r ci[2]`]). Neither of which is a significant result.
+Those who were not exposed during their first two years of life are accounting for a `r fit1$coefficients[2]` increase in IQ score for each unit increase in miles from the smelter (95% Confidence Interval: [`r confint(fit1)[2, 1]`, `r confint(fit1)[2, 2]`]). Those who were exposed in their first two years of life are accounting for a `r fit1$coefficients[2] + fit1$coefficients[4]` increase in IQ score (95% Confidence Interval: [`r ci[1]`, `r ci[2]`]). Those who were exposed during their first two years had a significant increase in IQ score.
 
 # Part I
 ```{r, echo = TRUE, include = TRUE}
